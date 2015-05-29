@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>My Photos</title>
+    <link href="defaultmap.css" rel="stylesheet">
+	
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+	<script src="photoinfo.js"></script>
+    <script>
+      function mapinit() {
+			var mapOptions = {
+			  zoom: 3,
+			  center: new google.maps.LatLng(14,10),
+			  mapTypeId: google.maps.MapTypeId.ROADMAP
+			}
+			var map = new google.maps.Map(document.getElementById('map_canvas'),
+										  mapOptions);
+			//alert('Calling setIcons(map)...');
+			setIcons(map);
+		};
+		function setIcons(map) {
+			var photoinfos = getPhotoInfo();
+			//var allImages ={};
+			//var allIcons = {};
+			for (var photoname in photoinfos) {
+				var imageName = 'pics/thumbnails/' + photoname; //'pics/beachflag.png'; //
+				//alert(imageName);
+				//allImages[photoname] 
+				var photo = photoinfos[photoname];
+				//alert(photo.desc);
+				//alert(photo.latlon.lat);
+				var theImage = new google.maps.MarkerImage(imageName,
+																	new google.maps.Size(photo.thumbnail.width, photo.thumbnail.height), 	//size
+																	new google.maps.Point(0,0), 	//origin
+																	new google.maps.Point(0, photo.thumbnail.height/2) 	//anchor
+																);		
+				var theLatLng = new google.maps.LatLng(photo.latlon.lat,photo.latlon.lon);
+				//alert(theLatLng);
+				//allIcons[photoname] 
+				var theMarker = new google.maps.Marker({
+					position: theLatLng,
+					map: map,
+					icon: theImage, //allImages[photoname],
+					//shape: {type:'rect',coord:[-photo.thumbnail.width/2,photo.thumbnail.height/2,photo.thumbnail.width/2,photo.thumbnail.height/2]},  //MarkerShape
+					title: photo.desc + '; ' + photo.date,
+					zIndex: photo.zidx,
+					src: 'pics/' + photoname
+				});
+				google.maps.event.addListener(theMarker, 'click', function(event) {window.open(this.src);});
+			}
+      }
+    </script>
+  </head>
+  <body onload="mapinit()">
+	<center><a href="tutorials.html">back</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<span font="40pt"><b>Photos around the world:</b></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="http://sites.google.com/site/ghasemphotos/" target="_blank"> old archive </a>
+	</center>
+    <div id="map_canvas"></div>
+  </body>
+</html>
